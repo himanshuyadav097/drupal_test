@@ -1,0 +1,7 @@
+name = user registration
+description = WebService APIs for user registration.
+core = 7.x
+package = user registration
+project = user_registration
+dependencies[] = services
+dependencies[] = rest_server

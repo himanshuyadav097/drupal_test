@@ -1,0 +1,16 @@
+<?php 
+ 
+ function user_registration_services_resources() {
+ 	$resources = array();
+ 
+ 	//Include the necessary inc files.
+ 	module_load_include('inc', 'user_registration_services', 'includes/user_registration.services');
+ 
+ 	//Service Apis for contents.
+ 	$resources += user_registration_services_resource();
+ 
+ 	return $resources;
+ }
+ 
+ ?>
+

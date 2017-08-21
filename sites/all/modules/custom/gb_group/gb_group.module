@@ -1,0 +1,295 @@
+<?php
+function gb_group_permission() {
+	return array (
+			'gb_group_per_add' => array (
+					'title' => 'Create form gb_group According To choice',
+					'description' => 'Form gb_group Creation' 
+			),
+			'gb_group_per_view' => array (
+					'title' => 'View The List Of gb_group',
+					'description' => 'View gb_group according to his powers' 
+			) 
+	);
+}
+function gb_group_menu() {
+	$items ['admins/gb_group/add'] = array (
+			'title' => 'Add New Gb Group Form',
+			'page callback' => 'drupal_get_form',
+			'page arguments' => array (
+					0 => 'gb_group_add' 
+			),
+			'access arguments' => array (
+					0 => 'gb_group_per_add' 
+			),
+			'description' => 'General',
+			'type' => 0,
+			'weight' => 1 
+	);
+	$items ['admins/gb_group/view'] = array (
+			'title' => 'Gb Group List',
+			'page callback' => 'drupal_get_form',
+			'page arguments' => array (
+					0 => 'gb_group_view' 
+			),
+			'access arguments' => array (
+					0 => 'gb_group_per_view' 
+			),
+			'description' => 'General',
+			'type' => 0,
+			'weight' => 1 
+	);
+	$items ['admins/gb_group/edit/%'] = array (
+			'title' => 'Gb Group Edit',
+			'page callback' => 'drupal_get_form',
+			'page arguments' => array (
+					0 => 'gb_group_add',
+					1 => 3 
+			),
+			'access arguments' => array (
+					0 => 'gb_group_per_add' 
+			),
+			'description' => 'General',
+			'type' => 0,
+			'weight' => 1 
+	);
+	$items ['admins/gb_group/detail/%'] = array (
+			'title' => 'Gb Group detail',
+			'page callback' => 'drupal_get_form',
+			'page arguments' => array (
+					0 => 'gb_group_detail',
+					1 => 3 
+			),
+			'access arguments' => array (
+					0 => 'gb_group_per_view' 
+			),
+			'description' => 'General',
+			'type' => 0,
+			'weight' => 1 
+	);
+	return $items;
+}
+function gb_group_add($form, &$form_state, $id = NULL) {
+	if (! empty ( $id )) {
+		$data = get_data_by_pks ( 'gb_group', $id );
+		
+		$form ['#submit'] [] = "gb_group_edit_submit";
+		$form ['id'] = array (
+				'#type' => 'value',
+				'#value' => $id 
+		);
+	}
+	$form ['g_name'] = array (
+			'#type' => 'textfield',
+			'#title' => 'G_name',
+			'#size' => '255',
+			'#attributes' => array (
+					'placeholder' => '',
+					'maxlength' => '255' 
+			),
+			'#default_value' => isset ( $data->g_name ) ? $data->g_name : "" 
+	);
+	$form ['created'] = array (
+			'#type' => 'textfield',
+			'#title' => 'Created',
+			'#size' => '10',
+			'#attributes' => array (
+					'placeholder' => '',
+					'maxlength' => '10' 
+			),
+			'#default_value' => isset ( $data->created ) ? date ( "Y-m-d", $data->created ) : "" 
+	);
+	$form ['updated'] = array (
+			'#type' => 'textfield',
+			'#title' => 'Updated',
+			'#size' => '10',
+			'#attributes' => array (
+					'placeholder' => '',
+					'maxlength' => '10' 
+			),
+			'#default_value' => isset ( $data->updated ) ? date ( "Y-m-d", $data->updated ) : "" 
+	);
+	$form ['updatedby'] = array (
+			'#type' => 'textfield',
+			'#title' => 'Updatedby',
+			'#size' => '10',
+			'#attributes' => array (
+					'placeholder' => '',
+					'maxlength' => '10' 
+			),
+			'#default_value' => isset ( $data->updatedby ) ? $data->updatedby : "" 
+	);
+	$form ['createdby'] = array (
+			'#type' => 'textfield',
+			'#title' => 'Createdby',
+			'#size' => '10',
+			'#attributes' => array (
+					'placeholder' => '',
+					'maxlength' => '10' 
+			),
+			'#default_value' => isset ( $data->createdby ) ? $data->createdby : "" 
+	);
+	
+	$form ['submit'] = array (
+			'#type' => 'submit',
+			'#value' => 'Save' 
+	);
+	return $form;
+}
+function gb_group_validate($form, &$form_state) {
+}
+function gb_group_add_submit($form, &$form_state) {
+	global $user;
+	$query = db_insert ( 'gb_group' )->fields ( array (
+			'g_name' => $form_state ['values'] ['g_name'],
+			'created' => strtotime ( $form_state ['values'] ['created'] ),
+			'updated' => strtotime ( $form_state ['values'] ['updated'] ),
+			'updatedby' => $form_state ['values'] ['updatedby'],
+			'createdby' => $form_state ['values'] ['createdby'] 
+	) )->execute ();
+	if ($query > 0) {
+		drupal_set_message ( 'gb_group added successfully' );
+		drupal_goto ( 'admins/gb_group/view' );
+	}
+}
+function gb_group_edit_submit($form, &$form_state) {
+	global $user;
+	$query = db_update ( 'gb_group' )->fields ( array (
+			'g_name' => $form_state ['values'] ['g_name'],
+			'created' => strtotime ( $form_state ['values'] ['created'] ),
+			'updated' => strtotime ( $form_state ['values'] ['updated'] ),
+			'updatedby' => $form_state ['values'] ['updatedby'],
+			'createdby' => $form_state ['values'] ['createdby'] 
+	) )->condition ( 'id', $form_state ['values'] ['id'], '=' )->execute ();
+	if ($form_state ['values'] ['id'] > 0) {
+		drupal_set_message ( 'gb_group update successfully' );
+		drupal_goto ( 'admins/gb_group/view' );
+	}
+}
+function gb_group_view($form, &$form_state) {
+	global $user;
+	$g_name = '';
+	if (! empty ( $_GET ['g_name'] )) {
+		$g_name = $_GET ['g_name'];
+	}
+	$form ['search_form'] = array (
+			'#title' => t ( 'Search and SortOrder' ),
+			'#type' => 'fieldset',
+			'#collapsible' => TRUE,
+			'#collapsed' => TRUE,
+			'#attached' => array (
+					'library' => array (
+							array (
+									'system',
+									'drupal.collapse' 
+							) 
+					) 
+			) 
+	);
+	
+	$form ['search_form'] ['g_name'] = array (
+			'#type' => 'textfield',
+			'#title' => t ( 'Group Name' ),
+			'#size' => 30,
+			'#default_value' => $g_name 
+	);
+	$form ['search_form'] ['submit'] = array (
+			'#type' => 'submit',
+			'#value' => 'Submit' 
+	);
+	$query = db_select ( 'gb_group', 'tn' )->extend ( 'PagerDefault' )->fields ( 'tn' )->orderBy ( 'tn.g_id', 'asc' )->limit ( 20 );
+	if (! empty ( $g_name )) {
+		
+		$query->condition ( 'tn.g_name', $g_name, '=' );
+	}
+	$result = $query->execute ();
+	$rows_articles = array ();
+	foreach ( $result as $records ) {
+		$created = util_date_format_short ( $records->created );
+	//	$updated = util_date_format_short ( $records->updated );
+		/*
+		 * if($records->deleted){
+		 * $deleted="Deleted";
+		 * }
+		 * else
+		 * {
+		 * //$deleted=l("<i class='icon-fixed-width icon-trash'></i>Delete",'admins/gb_group/edit/'.$records->array('html'=>TRUE));
+		 * }
+		 */
+		$rows_articles [] = array (
+				$records->g_id,
+				$records->g_name,
+				//$records->created,
+				date("Y-m-d",$records->created),
+				
+				/* $records->updated,
+				$records->updatedby, */
+				$records->createdby 
+		);
+	}
+	$headers = array (
+			'Group Id',
+			'Group Name',
+			'Created',
+		/* 	'Updated',
+			'Updatedby', */
+			'Createdby' 
+	);
+	$all_articles = theme ( 'table', array (
+			'header' => $headers,
+			'rows' => $rows_articles,
+			'empty' => 'No Record Found',
+			'attributes' => array (
+					'class' => array (
+							'list-table' 
+					),
+					'style' => 'width:100%;' 
+			) 
+	) );
+	$all_articles .= theme ( 'pager' );
+	$form ['all_articles'] = array (
+			'#markup' => $all_articles 
+	);
+	return $form;
+}
+function gb_group_detail($form, &$form_state, $id = NULL) {
+	global $user;
+	$query = db_select ( 'gb_group', 'tn' )->extend ( 'PagerDefault' )->fields ( 'tn' )->condition ( 'tn.id', $id, '=' )->orderBy ( 'tn.id', 'desc' );
+	$result = $query->execute ()->fetchObject ();
+	$rows_articles = array ();
+	if (! empty ( $result ))
+		foreach ( $result as $key => $value ) {
+			
+			$rows_articles [] = array (
+					$key . ' :: ' . $value 
+			);
+		}
+	
+	$all_articles = theme ( 'table', array (
+			'header' => array (),
+			'rows' => $rows_articles,
+			'empty' => 'No Record Found',
+			'attributes' => array (
+					'class' => array (
+							'list-table' 
+					),
+					'style' => 'width:100%;' 
+			) 
+	) );
+	$all_articles .= theme ( 'pager' );
+	$form ['all_articles'] = array (
+			'#markup' => $all_articles 
+	);
+	return $form;
+}
+function gb_group_view_submit($form, &$form_state) {
+	$g_name = $form_state ['values'] ['g_name'];
+	
+	if (! empty ( $g_name )) {
+		$param ["g_name"] = $g_name;
+	}
+	
+	drupal_goto ( 'admins/gb_group/view', array (
+			'query' => $param 
+	) );
+}
+

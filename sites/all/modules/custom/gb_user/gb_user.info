@@ -1,0 +1,4 @@
+name=gb_user
+description=Techlet gb_user tags in this module
+core=7.x
+package="Techlet"

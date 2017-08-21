@@ -1,0 +1,4 @@
+name=gb_group
+description=Techlet gb_group tags in this module
+core=7.x
+package="Techlet"
