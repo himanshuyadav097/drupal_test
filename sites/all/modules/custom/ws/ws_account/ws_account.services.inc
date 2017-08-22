@@ -3,7 +3,7 @@ function ws_account_services_resources() {
 	$resources = array (
 			'drupal_test' => array (
 					'actions' => array (		
-				  'userregister' => array (
+				  	'userregister' => array (
 									'file' => array (
 											'type' => 'inc',
 											'module' => 'ws_account',
@@ -271,13 +271,7 @@ function validate_password($string){
 	
 	if(!empty($email_exits)){
 		$num=randomPassword();
-	  //  $num="ad fhfv";
-	   // $number1=str_replace(' ','',$num);
-	  //  define ("ACONSTANT", 123);
-	    
-	   /*   print_r(ACONSTANT);
-	     exit; */
-	   // $num1=stripslashes($num);
+	
 	    if(is_numeric($num)){
 			
 			echo "numaric";
