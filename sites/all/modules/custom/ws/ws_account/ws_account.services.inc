@@ -21,7 +21,25 @@ function ws_account_services_resources() {
 									),
 									'access callback' => '_ws_account_services_access'
 							),
-							'groupJoin' => array (
+					'userlogout' => array (
+									'file' => array (
+											'type' => 'inc',
+											'module' => 'ws_account',
+											'name' => 'ws_account.resource'
+									),
+									'callback' => 'userlogout',
+									'args' => array (
+											array (
+													'name' => 'data',
+													'type' => 'struct',
+													'description' => 'The note object',
+													'source' => 'data',
+													'optional' => FALSE
+											)
+									),
+									'access callback' => '_ws_account_services_access'
+							),
+					 'groupJoin' => array (
 									'file' => array (
 											'type' => 'inc',
 											'module' => 'ws_account',
@@ -40,7 +58,7 @@ function ws_account_services_resources() {
 									'access callback' => '_ws_account_services_access'
 							),
 					
-						  'usergroup' => array (
+					'usergroup' => array (
 									'file' => array (
 											'type' => 'inc',
 											'module' => 'ws_account',
@@ -58,8 +76,6 @@ function ws_account_services_resources() {
 									),
 									'access callback' => '_ws_account_services_access'
 							),
-							
-					
 					'forgetpassword' => array (
 									'file' => array (
 											'type' => 'inc',
@@ -95,24 +111,21 @@ function ws_account_services_resources() {
                                                                                  'type' => 'int',
                                                                                  'description' => 'uid',
                                                                  ), 	 
-							 		
-                                                               array(
+                                                              array(
                                                                              	'name' => 'uid',
                                                                               	'optional' => TRUE,
                                                                               	'source' => array('param' => 'uid'),
                                                                               	'type' => 'int',
                                                                               	'description' => 'uid of user',
                                                                ),
-							 		
-														 	    array(
+														 	  array(
 														 				'name' => 'rid',
 														 				'optional' => TRUE,
 														 				'source' => array('param' => 'rid'),
 														 				'type' => 'int',
 														 				'description' => 'rid of user',
 														 		),
-														 		
-                                                                array(
+                                                              array(
                                                                                  'name' => 'name',
                                                                                  'optional' => TRUE,
                                                                                  'source' => array('param' => 'name'),
@@ -127,15 +140,12 @@ function ws_account_services_resources() {
 	// TODO insert here
 	return $resources;
 }
-
 /**
  * Access callback.
  */
 function _ws_account_services_access($s) {
 	return TRUE;
 }
-
-
 function _ws_account_retrieve($s,$uid,$rid,$name,$limit,$page,$sort) {
 	$output = array();
 	$where='';
@@ -149,12 +159,9 @@ function _ws_account_retrieve($s,$uid,$rid,$name,$limit,$page,$sort) {
  		if (isset( $name )) {
  			$query->condition ( 'p.name',$name,'=' );
  		}
- 		
  		$output = $query->orderBy ( 'p.uid', 'asc' )->limit ( 20 )->execute ()->fetchall ();
- 		
  	}
  	if($s=='registrationlist'){
- 	
  		$query = db_select ( 'gb_user', 'p' )->extend ( 'PagerDefault' );
  		$query->extend ( 'PagerDefault' )
  		->fields ( 'p' );
@@ -162,11 +169,8 @@ function _ws_account_retrieve($s,$uid,$rid,$name,$limit,$page,$sort) {
  			$query->condition ( 'p.rid',$rid,'=' );
  		}
  		$output = $query->orderBy ( 'p.rid', 'asc' )->limit ( 20 )->execute ()->fetchall ();
-
  	}
  	if($s=='groupList'){
- 	
- 		
  		$query = db_select ( 'gb_group_members', 'p' )->extend ( 'PagerDefault' );
  		$query->extend ( 'PagerDefault' )
  		->fields ( 'p' );
@@ -174,21 +178,20 @@ function _ws_account_retrieve($s,$uid,$rid,$name,$limit,$page,$sort) {
  			$query->condition ( 'p.rid',$rid,'=' );
  		}
  		$output = $query->orderBy ( 'p.rid', 'asc' )->limit ( 20 )->execute ()->fetchall ();
- 	
  	}
 	return $output;
 }
-
 /*
  * 
  * user regiser post api 
  */
 function userregister($arg1) {
-	
+	session_start();
+	$_SESSION["email"] = $arg1[email];
+	$_SESSION["password"] = $arg1[password];
 	$output=array();
 	    if(validate_users($arg1[f_name]) && validate_users($arg1[l_name]) && validate_emails($arg1[email]) && validate_password($arg1[password]) )
 	    {
-	    	
 	    	$str=$arg1[password];
 	    	//$str = preg_replace('/\s+/', '', $arg1[password]);
 	    
@@ -211,11 +214,9 @@ function userregister($arg1) {
 						)->execute ();
 				
 				$output['rid']=$inst_rec;
-				
 			}
 			catch ( Exception $e ) {
 			}
-			
 		}else{
 			$output['error']='Duplicate Entry';
   		}
@@ -224,11 +225,8 @@ function userregister($arg1) {
 	    {
 			$output['error']='Please Insert currect Keyword';
 	    }
-	    
 	    return  $output;
-	     
 }
-
 /*
  * validation code for users first name and last name also email 
  * 
@@ -243,7 +241,6 @@ function validate_users($string){
 	return true;
 
 }
-
   function validate_emails($string){
  
 	if (filter_var($string, FILTER_VALIDATE_EMAIL)) 
@@ -258,37 +255,36 @@ function validate_password($string){
 		return true;
 	}
 	return false;
-
 }
 /*
  * Forget password code start
  *
  */
  function forgetpassword($arg2){
- 
 	//$output=array();
 	$email_exits=db_query("SELECT email from gb_user where email='$arg2[email]'")->fetchAll();
-	
 	if(!empty($email_exits)){
 		$num=randomPassword();
-	
 	    if(is_numeric($num)){
-			
 			echo "numaric";
 		}
 			else{
-				
 				echo "no";
 			}
-		
 		$pass=md5($num);
-	
+		$to      = 'himanshu.yadav@techletsolutions.com';
+		$subject = 'Forget Password Is  '.$num.'';
+		$message = 'Forget Password & password update';
+		$headers = 'From: webmaster@example.com' . "\r\n" .
+				'Reply-To: webmaster@example.com' . "\r\n" .
+				'X-Mailer: PHP/' . phpversion();
+		
+		mail($to, $subject, $message, $headers);
 		  try {
 		  //	drupal_mail(ws_account, '23324', 'himanshu.yadav@techletsolutions.com', 'fgr');
 			$pwd_update=db_query("update  gb_user set password='".$pass."' where email='".$email_exits[0]->email."'")->execute();
 		  	
 		  } catch (Exception $e) {
-		  	
 		  	print_r($e);
 		  }
 		}
@@ -315,7 +311,6 @@ function randomPassword() {
  * @return mixed|StdClass
  **********************************************************
  */
-
 /*
  *
  * user regiser post api
@@ -323,7 +318,6 @@ function randomPassword() {
 function usergroup($arg1) {
 	
 	$output=array();
-	
 	$userid=db_query("SELECT * from gb_user where rid='$arg1[rid]'")->fetchAll();
 	if(validate_users($arg1[g_name])){
 	if(!empty($userid)){
@@ -372,9 +366,8 @@ function usergroup($arg1) {
 }
 return $output;
 }
-
-
 function groupJoin($arg1) {
+	
 	$output=array();
 	try {
 		$inst_grp_member = db_insert ( 'gb_group_members' )->fields ( array (
@@ -393,4 +386,18 @@ function groupJoin($arg1) {
 	
 	}
 	return $output;
+}
+/*
+ * User logout session destroy
+ * email
+ * 
+ */
+function userlogout($arg1){
+	
+	if(isset($_SESSION["email"]) && $_SESSION["password"] ){
+		unset($_SESSION["email"]);
+		unset($_SESSION["password"]);
+		
+	}
+	session_destroy();
 }
