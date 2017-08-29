@@ -147,8 +147,8 @@ function gb_group_add_submit($form, &$form_state) {
 			'createdby' => $form_state ['values'] ['createdby'] 
 	) )->execute ();
 	if ($query > 0) {
-		drupal_set_message ( 'gb_group added successfully' );
-		drupal_goto ( 'admins/gb_group/view' );
+		drupal_set_message ('gb_group added successfully');
+		drupal_goto ('admins/gb_group/view');
 	}
 }
 function gb_group_edit_submit($form, &$form_state) {

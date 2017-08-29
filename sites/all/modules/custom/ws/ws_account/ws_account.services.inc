@@ -1,9 +1,9 @@
 <?php
 function ws_account_services_resources() {
 	$resources = array (
-			'drupal_test' => array (
+			   'drupal_test' => array (
 					'actions' => array (		
-				  	'userregister' => array (
+				  'userregister' => array (
 									'file' => array (
 											'type' => 'inc',
 											'module' => 'ws_account',
@@ -83,6 +83,24 @@ function ws_account_services_resources() {
 											'name' => 'ws_account.resource'
 									),
 									'callback' => 'forgetpassword',
+									'args' => array (
+											array (
+													'name' => 'data',
+													'type' => 'struct',
+													'description' => 'The note object',
+													'source' => 'data',
+													'optional' => FALSE
+											)
+									),
+									'access callback' => '_ws_account_services_access'
+							),
+							'profileupdated' => array (
+									'file' => array (
+											'type' => 'inc',
+											'module' => 'ws_account',
+											'name' => 'ws_account.resource'
+									),
+									'callback' => 'profileupdated',
 									'args' => array (
 											array (
 													'name' => 'data',
@@ -181,7 +199,7 @@ function _ws_account_retrieve($s,$uid,$rid,$name,$limit,$page,$sort) {
  	}
 	return $output;
 }
-/*
+/**
  * 
  * user regiser post api 
  */
@@ -193,11 +211,6 @@ function userregister($arg1) {
 	    if(validate_users($arg1[f_name]) && validate_users($arg1[l_name]) && validate_emails($arg1[email]) && validate_password($arg1[password]) )
 	    {
 	    	$str=$arg1[password];
-	    	//$str = preg_replace('/\s+/', '', $arg1[password]);
-	    
-	    	/* print_r($str);
-	    	exit; */
-	    //	$str = "$arg1[password]";
 	    	$pwd_md5= md5($str); 
 	        $email_exits=db_query("SELECT email from gb_user where email='$arg1[email]'")->fetchAll();
 	   
@@ -209,10 +222,8 @@ function userregister($arg1) {
 						'email' => $arg1[email],
 						'password' =>$pwd_md5,
 						'created' => time ()
-						
 				)
 						)->execute ();
-				
 				$output['rid']=$inst_rec;
 			}
 			catch ( Exception $e ) {
@@ -227,7 +238,7 @@ function userregister($arg1) {
 	    }
 	    return  $output;
 }
-/*
+/**
  * validation code for users first name and last name also email 
  * 
  * 
@@ -239,7 +250,6 @@ function validate_users($string){
 		return false;
 	}
 	return true;
-
 }
   function validate_emails($string){
  
@@ -256,7 +266,7 @@ function validate_password($string){
 	}
 	return false;
 }
-/*
+/**
  * Forget password code start
  *
  */
@@ -281,7 +291,6 @@ function validate_password($string){
 		
 		mail($to, $subject, $message, $headers);
 		  try {
-		  //	drupal_mail(ws_account, '23324', 'himanshu.yadav@techletsolutions.com', 'fgr');
 			$pwd_update=db_query("update  gb_user set password='".$pass."' where email='".$email_exits[0]->email."'")->execute();
 		  	
 		  } catch (Exception $e) {
@@ -387,7 +396,7 @@ function groupJoin($arg1) {
 	}
 	return $output;
 }
-/*
+/**
  * User logout session destroy
  * email
  * 
@@ -397,7 +406,32 @@ function userlogout($arg1){
 	if(isset($_SESSION["email"]) && $_SESSION["password"] ){
 		unset($_SESSION["email"]);
 		unset($_SESSION["password"]);
-		
 	}
 	session_destroy();
+}
+/**
+ * profile updted
+ * f_name
+ * l_name
+ * email
+ * password
+ * 
+ */
+function profileupdated($arg4){
+	$output=array();
+	if(!empty($arg4)){
+		$userdetail=db_query("SELECT rid,f_name,l_name,email,password from gb_user where rid='$arg4[rid]'")->fetchAll();
+		
+		try {
+			echo $f_name=(isset($arg4[f_name]) && $arg4[f_name]!='')?$arg4[f_name]:$userdetail['f_name'];
+			echo $l_name=(isset($arg4[l_name]) && $arg4[l_name]!='')?$arg4[l_name]:$userdetail['l_name'];
+			echo $email=(isset($arg4[email]) && $arg4[email]!='')?$arg4[email]:$userdetail['email'];
+			//	drupal_mail(ws_account, '23324', 'himanshu.yadav@techletsolutions.com', 'fgr');
+			$user_detail_update=db_query("update  gb_user set f_name='".$f_name."',l_name='".$l_name."',email='".$email."' where rid='".$arg4[rid]."'")->execute();
+			 $output['rid']=$user_detail_update;
+		} catch (Exception $e) {
+			 $output['error']="some went error";
+		}
+	}
+	return $output;
 }
