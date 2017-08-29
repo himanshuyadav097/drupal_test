@@ -21,6 +21,24 @@ function ws_account_services_resources() {
 									),
 									'access callback' => '_ws_account_services_access'
 							),
+							'userlogin' => array (
+									'file' => array (
+											'type' => 'inc',
+											'module' => 'ws_account',
+											'name' => 'ws_account.resource'
+									),
+									'callback' => 'userlogin',
+									'args' => array (
+											array (
+													'name' => 'data',
+													'type' => 'struct',
+													'description' => 'The note object',
+													'source' => 'data',
+													'optional' => FALSE
+											)
+									),
+									'access callback' => '_ws_account_services_access'
+							),
 					'userlogout' => array (
 									'file' => array (
 											'type' => 'inc',
@@ -204,6 +222,7 @@ function _ws_account_retrieve($s,$uid,$rid,$name,$limit,$page,$sort) {
  * user regiser post api 
  */
 function userregister($arg1) {
+	
 	session_start();
 	$_SESSION["email"] = $arg1[email];
 	$_SESSION["password"] = $arg1[password];
@@ -212,11 +231,12 @@ function userregister($arg1) {
 	    {
 	    	$str=$arg1[password];
 	    	$pwd_md5= md5($str); 
-	        $email_exits=db_query("SELECT email from gb_user where email='$arg1[email]'")->fetchAll();
+	        $email_exits=db_query("SELECT email from gb_user where email='$arg1[email]' OR user_name='$arg1[user_name]'")->fetchAll();
 	   
 		if(empty($email_exits)){
 			try {
 				$inst_rec = db_insert ( 'gb_user' )->fields ( array (
+						'user_name' => $arg1[user_name],
 						'f_name' => $arg1[f_name],
 						'l_name' => $arg1[l_name],
 						'email' => $arg1[email],
@@ -313,14 +333,47 @@ function randomPassword() {
 }
 /**
  **********************************************************
- * 1.[POST]::Searchlist API to give complete Mobile Results
+ * 1.[POST]::User Login API Response l_id login Id
  *
  * @param unknown $data
  *
  * @return mixed|StdClass
  **********************************************************
  */
-/*
+
+
+function userlogin($arg4){
+	$output=array();
+	$pwd_md6= md5($arg4[password]);
+	
+	$login_user=db_query("SELECT rid,user_name,password from gb_user where user_name='$arg4[user_name]' AND password='$pwd_md6'")->fetchAll();
+	if(!empty($login_user)){
+		
+		$login_insert=db_insert('gb_login')->fields( array(
+				'rid'=>$login_user[0]->rid,
+				'is_login'=>1,
+				't_time'=>time()
+	)
+				)->execute ();
+				$output['login']=$login_insert;
+	}else{
+		
+		$output['error']='Forget username password Please Register First';
+		
+	}
+	return $output;
+}
+/**
+ * User logout session destroy
+ * email
+ *
+ */
+function userlogout($arg1){
+$logout=array();
+$userlogout_update=db_query("update  gb_login set is_login=0 where rid='".$arg1[rid]."' OR l_id='".$arg1[l_id]."'")->execute();
+return $logout[logout]=$userlogout_update;
+}
+/**
  *
  * user regiser post api
  */
@@ -396,19 +449,7 @@ function groupJoin($arg1) {
 	}
 	return $output;
 }
-/**
- * User logout session destroy
- * email
- * 
- */
-function userlogout($arg1){
-	
-	if(isset($_SESSION["email"]) && $_SESSION["password"] ){
-		unset($_SESSION["email"]);
-		unset($_SESSION["password"]);
-	}
-	session_destroy();
-}
+
 /**
  * profile updted
  * f_name
