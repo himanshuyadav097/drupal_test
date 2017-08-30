@@ -345,7 +345,6 @@ function randomPassword() {
 function userlogin($arg4){
 	$output=array();
 	$pwd_md6= md5($arg4[password]);
-	
 	$login_user=db_query("SELECT rid,user_name,password from gb_user where user_name='$arg4[user_name]' AND password='$pwd_md6'")->fetchAll();
 	if(!empty($login_user)){
 		
