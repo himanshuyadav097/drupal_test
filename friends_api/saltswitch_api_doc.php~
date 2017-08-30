@@ -1,0 +1,219 @@
+<?php
+/**
+* @apiVersion 1.0.0
+* @api {post} https://au.foodswitch.com.au/foodswitch/api/UserRegistration  User  Regestarion API - POST
+* @apiDescription 
+* 
+* Scenario: During User Registration
+*  
+* Screen : NA
+* 
+* API Function:This api create user record.  
+* 
+* @apiName User Registration post
+* @apiGroup User Registration 
+*
+* @apiParam  {string} userreg.provider Gmail and FaceBook are the providers
+* @apiParam  {smallint} userreg.providerid Consider Gamil ID as 1 and Facebook as 2
+* @apiParam  {string} userreg.userid Comes from the App.
+* @apiParam  {string} [userreg.username] Comes from the App if avalible.
+* @apiParam  {string} [userreg.pic] Comes from the App if avalible.
+* @apiParam  {string} userreg.platform A= Android, I = Iphone, W = Web, S= SSO
+* @apiParam  {string} [userreg.state] State
+* @apiParam  {string} [userreg.city] City
+* @apiParam  {string} [userreg.country] Country
+* @apiParam  {string} [userreg.email] Email
+* @apiParam  {int} [userreg.postcode] Postcode
+* @apiParam  {timestamp} [userreg.date_register] Registered Date
+* @apiParam  {int} [userreg.regstatus] 1=Active, 0=Deactive
+* @apiParam  {string} [userreg.devicename] Like Samsung, iphone etc..
+* @apiParam  {timestamp} [userreg.version] Operating system with version
+* @apiParam  {timestamp} [userreg.updated] updated Updated time
+* @apiParam   {char} [userreg.updated_by] updated by User ID
+* @apiParam   {int} [userreg.deleted] deleted deleted 0 = no 1 = yes
+* 
+* @apiSuccess {string} Success true means success, false means fail result
+* @apiSuccess {string} message Record Created if success 
+* 
+* @apiSuccess (data) {int} userReg.uid User uid
+* @apiSuccess  (data) {string} userreg.provider Gmail and FaceBook are the providers
+* @apiSuccess  (data) {smallint} userreg.providerid Consider Gamil ID as 1 and Facebook as 2
+* @apiSuccess  (data) {string} userreg.userid Comes from the App.
+* @apiSuccess  (data) {string} userreg.username Comes from the App if avalible.
+* @apiSuccess  (data) {string} userreg.pic Comes from the App if avalible.
+* @apiSuccess  (data) {string} userreg.platform A= Android, I = Iphone, W = Web, S= SSO
+* @apiSuccess  (data) {string} userreg.state State
+* @apiSuccess  (data) {string} userreg.city City
+* @apiSuccess  (data) {string} userreg.country Country
+* @apiSuccess  (data) {string} userreg.email Email
+* @apiSuccess  (data) {int} userreg.postcode Postcode
+* @apiSuccess  (data) {timestamp} userreg.date_register Registered Date
+* @apiSuccess  (data) {int} userreg.regstatus 1=Active, 0=Deactive
+* @apiSuccess  (data) {string} userreg.devicename Like Samsung, iphone etc..
+* @apiSuccess  (data) {timestamp} userreg.version Operating system with version
+* @apiSuccess  (data) {timestamp} userreg.updated updated Updated time
+* @apiSuccess  (data) {char} userreg.updated_by updated by User ID
+* @apiSuccess  (data) {int} userreg.deleted deleted deleted 0 = no 1 = yes
+* 
+* 
+*/ 
+
+/**
+ * @apiVersion 1.0.0
+ * @api {get} https://au.foodswitch.com.au/foodswitch/api/UserRegistration  User  Regestarion API - Get
+ * @apiDescription
+ * 
+ * Scenario: NA
+ *
+ * Screen : NA
+ *
+ * API Function:This api fetch user's records.
+ *
+ * @apiName User Registration - GET
+ * @apiGroup User Registration
+ *
+ * @apiParam  {int} userReg.uid User uid
+ *
+ * @apiSuccess {string} Success true means success, false means fail result
+ * @apiSuccess {String} message Record(s) Found if success
+ *
+ * @apiSuccess (data) {int} userReg.uid User uid
+ * @apiSuccess  (data) {string} userreg.provider Gmail and FaceBook are the providers
+ * @apiSuccess  (data) {smallint} userreg.providerid Consider Gamil ID as 1 and Facebook as 2
+ * @apiSuccess  (data) {string} userreg.userid Comes from the App.
+ * @apiSuccess  (data) {string} userreg.username Comes from the App if avalible.
+ * @apiSuccess  (data) {string} userreg.pic Comes from the App if avalible.
+ * @apiSuccess  (data) {string} userreg.platform A= Android, I = Iphone, W = Web, S= SSO
+ * @apiSuccess  (data) {string} userreg.state State
+ * @apiSuccess  (data) {string} userreg.city City
+ * @apiSuccess  (data) {string} userreg.country Country
+ * @apiSuccess  (data) {string} userreg.email Email
+ * @apiSuccess  (data) {int} userreg.postcode Postcode
+ * @apiSuccess  (data) {timestamp} userreg.date_register Registered Date
+ * @apiSuccess  (data) {int} userreg.regstatus 1=Active, 0=Deactive
+ * @apiSuccess  (data) {string} userreg.devicename Like Samsung, iphone etc..
+ * @apiSuccess  (data) {timestamp} userreg.version Operating system with version
+ * @apiSuccess  (data) {timestamp} userreg.updated updated Updated time
+ * @apiSuccess  (data) {char} userreg.updated_by updated by User ID
+ * @apiSuccess  (data) {int} userreg.deleted deleted deleted 0 = no 1 = yes
+ * 
+ *
+ */
+
+/**
+ * @apiVersion 1.0.0
+ * @api {get} https://au.foodswitch.com.au/foodswitch/api/order  Order API - Get
+ * @apiDescription
+ *
+ * Scenario: This api fetch member order records whenever user to display order data.
+ *
+ * Screen: NA
+ *
+ * API Function: This api fetch order records of user.
+ *
+ * @apiName Order
+ * @apiGroup Order
+ *
+ * @apiParam  {int}    userReg.oid order id
+ *
+ * @apiSuccess {string} Success true means success, false means fail result
+ * @apiSuccess {String} message Record(s) Found if success
+ *
+ * @apiSuccess (data) {int} totalCount Total Count of record
+ *
+ * @apiSuccess  (data){int} userorder.PurchasedSwitch_ID  Purchasedswitch id
+ * @apiSuccess  (data){int} userorder.order_type 1- food Switch, 2 - fatswitch, 3- sugar switch etc.,
+ * @apiSuccess  (data){string} userorder.Platform Plateform
+ * @apiSuccess  (data){int} userorder.uid Its was prevously generated and given by server
+ * @apiSuccess  (data){string} userorder.order_type Order type
+ * @apiSuccess  (data){int} userorder.amount Amount
+ * @apiSuccess  (data){timestamp} userorder.pay_date Pay date
+ * @apiSuccess  (data){int} userorder.is_paid is paid
+ * @apiSuccess  (data){string} userorder.trans_id Transaction id
+ * @apiSuccess  (data){timestamp} userorder.updated updated date
+ * @apiSuccess  (data){int} userorder.updated_by updated by
+ * @apiSuccess  (data){smallint} userorder.deleted deleted 0=NO,deleted 1=yes
+ *
+ *
+ */
+
+/**
+* @apiVersion 1.0.0
+* @api {post} https://au.foodswitch.com.au/foodswitch/api/order  User order API - post
+* @apiDescription
+*
+* Scenario: During payment process.
+*
+* Screen: NA
+*
+* API Function:This api creates record for order.
+*
+* @apiName Order post
+* @apiGroup Order
+*
+* @apiParam  {int} userorder.PurchasedSwitch_ID 
+* @apiParam  {int} userorder.order_type 1- food Switch, 2 - fatswitch, 3- sugar switch etc.,
+* @apiParam  {string} userorder.Platform Plateform
+* @apiParam  {int} userorder.uid Its was prevously generated and given by server
+* @apiParam  {string} [userorder.order_type] Order type
+* @apiParam  {int} [userorder.amount] Amount
+* @apiParam  {timestamp} [userorder.pay_date] Pay date
+* @apiParam  {int} [userorder.is_paid] is paid
+* @apiParam  {string} [userorder.trans_id] Transaction id
+* @apiParam  {timestamp} [userorder.updated] updated date
+* @apiParam  {int} [userorder.updated_by] updated by
+* @apiParam  {smallint} [userorder.deleted] deleted 0=NO,deleted 1=yes
+*
+* @apiSuccess {string} Success true means success,Status = "201"  false means fail result
+* @apiSuccess {string} message Record Created if success
+*
+* @apiSuccess  (data){int} userorder.PurchasedSwitch_ID  Purchasedswitch id
+* @apiSuccess  (data){int} userorder.order_type 1- food Switch, 2 - fatswitch, 3- sugar switch etc.,
+* @apiSuccess  (data){string} userorder.Platform Plateform
+* @apiSuccess  (data){int} userorder.uid Its was prevously generated and given by server
+* @apiSuccess  (data){string} userorder.order_type Order type
+* @apiSuccess  (data){int} userorder.amount Amount
+* @apiSuccess  (data){timestamp} userorder.pay_date Pay date
+* @apiSuccess  (data){int} userorder.is_paid is paid
+* @apiSuccess  (data){string} userorder.trans_id Transaction id
+* @apiSuccess  (data){timestamp} userorder.updated updated date
+* @apiSuccess  (data){int} userorder.updated_by updated by
+* @apiSuccess  (data){smallint} userorder.deleted deleted 0=NO,deleted 1=yes
+
+
+*
+*
+*
+*/
+
+/**
+* @apiVersion 1.0.0
+* @api {post} https://au.foodswitch.com.au/foodswitch/api/restore  Restore API - get
+* @apiDescription
+*
+* Scenario: During restore
+*
+* Screen: NA
+*
+* API Function:This api restore
+*
+* @apiName Restore
+* @apiGroup restore
+*
+* @apiParam  {int} restore.provider provider  
+* @apiParam  {int} restore.providerid providerid 
+* @apiParam  {string} restore.userid userid
+* @apiParam  {int} [restore.username] username
+* @apiParam  {string} [restore.pic] pic
+* @apiParam  {int} restore.Platform Platform
+*
+* @apiSuccess {string} Success true means success,Status = "201"  false means fail result
+* @apiSuccess {string} message Record Created if success
+*
+* @apiSuccess  {int} restore.Status status
+* @apiSuccess  {int} restore.Unique_ID Unique_ID 
+*
+*
+*
+*/
+
